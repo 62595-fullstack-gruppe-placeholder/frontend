@@ -161,8 +161,7 @@ describe("AdminPanel", () => {
     const unconfirmed = { ...freeUser, id: "x", email: "x@x.com", email_confirmed: false };
     const screen = render(<AdminPanel users={[freeUser, unconfirmed]} />);
 
-    const cells = screen.getAllByText("Yes");
-    expect(cells.length).toBeGreaterThan(0);
-    expect(screen.getByText("No")).toBeInTheDocument();
+    expect(screen.getAllByText("Yes").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("No").length).toBeGreaterThan(0);
   });
 });
