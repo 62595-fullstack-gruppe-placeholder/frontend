@@ -5,6 +5,7 @@ import * as adminActions from "../adminActions";
 import { User } from "@/lib/repository/user/userSchemas";
 
 vi.mock("../adminActions");
+vi.mock("server-only", () => ({}));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const freeUser: User = {
