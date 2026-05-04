@@ -7,7 +7,7 @@ const REFRESH_TOKEN_NAME = "refresh-token";
 
 const getCookieOptions = () => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  //secure: process.env.NODE_ENV === "production", cant set secure because we dont have https
   sameSite: "lax" as const,
   path: "/",
 });
