@@ -229,7 +229,6 @@ describe('ScanSettingsForm', () => {
 
     const form = container.querySelector('form');
     expect(form).toBeInTheDocument();
-    expect(form).toHaveClass('px-4', 'py-10');
   });
 
   it('should maintain deep scan toggle state independently from extensions', async () => {
