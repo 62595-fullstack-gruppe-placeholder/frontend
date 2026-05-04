@@ -102,14 +102,14 @@ export async function runRecursiveScanNowAction(scanId: string) {
     return { success: false, error: "Scan not found or unauthorized" };
   }
 
-  const decryptedKey = scan.repoKey ? decrypt(scan.repoKey) : null;
+  // const decryptedKey = scan.repoKey ? decrypt(scan.repoKey) : null;
   const res = await fetch("http://scraper:5001/recursive-scan", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: scan.id,
       url: scan.repo_url,
-      repoKey: decryptedKey,
+      repoKey: scan.repoKey,
       isDeepScan: scan.is_deep_scan,
       extensions: scan.extensions,
       owner_id: user.id

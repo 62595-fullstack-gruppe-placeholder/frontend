@@ -75,6 +75,7 @@ services:
     environment:
       DATABASE_URL: postgresql://root:fisk@postgres:5432/reporacoondb?sslmode=disable
       CELERY_BROKER_URL: redis://redis:6379/0
+      ENCRYPTION_SECRET: ${ENCRYPTION_SECRET}
     volumes:
       - ./ignoreSettingsConfig.json:/app/ignoreSettingsConfig.json:ro
     ports:
@@ -99,6 +100,7 @@ services:
     environment:
       DATABASE_URL: postgresql://root:fisk@postgres:5432/reporacoondb?sslmode=disable
       CELERY_BROKER_URL: redis://redis:6379/0
+      ENCRYPTION_SECRET: ${ENCRYPTION_SECRET} 
     volumes:
       - ./ignoreSettingsConfig.json:/app/ignoreSettingsConfig.json:ro
     depends_on:
@@ -122,6 +124,7 @@ services:
     environment:
       DATABASE_URL: postgresql://root:fisk@postgres:5432/reporacoondb?sslmode=disable
       CELERY_BROKER_URL: redis://redis:6379/0
+      ENCRYPTION_SECRET: ${ENCRYPTION_SECRET} 
     volumes:
       - ./ignoreSettingsConfig.json:/app/ignoreSettingsConfig.json:ro
     depends_on:
@@ -131,6 +134,24 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    networks:
+      - app-network
+    restart: unless-stopped
+  
+  celery-beat:
+    image: ghcr.io/62595-fullstack-gruppe-placeholder/reporacoon/scraper:latest
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    command: celery -A tasks beat --loglevel=info
+    volumes:
+      - ./ignoreSettingsConfig.json:/app/ignoreSettingsConfig.json:ro
+    environment:
+      DATABASE_URL: postgresql://root:fisk@postgres:5432/reporacoondb?sslmode=disable
+      CELERY_BROKER_URL: redis://redis:6379/0
+      ENCRYPTION_SECRET: ${ENCRYPTION_SECRET}
+    depends_on:
+      - redis
     networks:
       - app-network
     restart: unless-stopped

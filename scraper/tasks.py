@@ -9,6 +9,10 @@ from repository import (
     updateRecursiveScanAfterRun,
 )
 from logic import GitHubSecretScanner
+from celery.schedules import timedelta
+from repository import getDueRecursiveScans, getUserTier
+from encryption import decrypt
+
 
 BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
 
@@ -19,6 +23,20 @@ celery_app.conf.update(
     task_acks_late=True,           # only ack after task completes, so a crashed worker re-queues the job
     worker_prefetch_multiplier=1,  # each worker picks up one job at a time from the queue
 )
+
+celery_app.conf.beat_schedule = {
+    'tick-recursive-scans': {
+        'task': 'tasks.tick_recursive_scans',
+        'schedule': timedelta(seconds=60),
+    },
+}
+
+@celery_app.task(queue='fast')
+def tick_recursive_scans():
+    for scan in getDueRecursiveScans():
+        tier = getUserTier(scan['owner_id']) if scan.get('owner_id') else "free"
+        task = run_recursive_scan_job_pro if tier == "pro" else run_recursive_scan_job_free
+        task.delay(scan['id'], scan['repo_url'], scan['repoKey'], scan['is_deep_scan'], scan['extensions'])
 
 # -------------------------------------------------------------------------
 # STANDARD SCANS
@@ -65,7 +83,8 @@ def run_recursive_scan_job_pro(self, recursive_id, repo_url, repoKey, is_deep_sc
     """Pro tier recurring scan: runs on fast queue."""
     try:
         job_id = insertScanJob(repo_url, recursive_scan_id=recursive_id)
-        scanner = GitHubSecretScanner(repo_url, job_id, is_deep_scan, extensions, repoKey)
+        decrypted_key = decrypt(repoKey) if repoKey else None
+        scanner = GitHubSecretScanner(repo_url, job_id, is_deep_scan, extensions, decrypted_key)
 
         start = time.time()
         scanner.run()
@@ -85,7 +104,8 @@ def run_recursive_scan_job_free(self, recursive_id, repo_url, repoKey, is_deep_s
     """Free tier recurring scan: runs on slow queue."""
     try:
         job_id = insertScanJob(repo_url, recursive_scan_id=recursive_id)
-        scanner = GitHubSecretScanner(repo_url, job_id, is_deep_scan, extensions, repoKey)
+        decrypted_key = decrypt(repoKey) if repoKey else None  
+        scanner = GitHubSecretScanner(repo_url, job_id, is_deep_scan, extensions, decrypted_key)
 
         start = time.time()
         scanner.run()

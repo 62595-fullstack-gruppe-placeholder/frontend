@@ -10,5 +10,6 @@ redis==5.0.8
 pytest
 pytest-flask
 requests-mock
+cryptography
 
 

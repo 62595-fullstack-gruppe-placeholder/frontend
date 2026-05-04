@@ -215,13 +215,16 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [jobs, setJobs] = useState<ScanJob[] | null>(null);
   const [findings, setFindings] = useState<ScanFinding[] | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchResults = useCallback(async () => {
+    setIsFetching(true);
     const result = await getRecurringScanResultsAction(scan.id);
     if (result.success) {
       setJobs(result.jobs);
       setFindings(result.findings);
     }
+    setIsFetching(false);
   }, [scan.id]);
 
   useEffect(() => {
@@ -240,8 +243,11 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
   }
 
   function handleRunNow() {
-    startTransition(async () => { await runRecursiveScanNowAction(scan.id); });
-  }
+    startTransition(async () => {
+    await runRecursiveScanNowAction(scan.id);
+    setTimeout(() => fetchResults(), 2000);
+  });
+}
 
   function handleExpand() {
     setIsExpanded((v) => !v);
@@ -310,7 +316,7 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
 
       {isExpanded && (
         <div className="px-6 pb-6 pt-2 border-t border-border/50 bg-box">
-          {isPending && jobs === null ? (
+          {isFetching && jobs === null ? (
             <p className="text-sm font-mono text-secondary">Loading results...</p>
           ) : jobs && jobs.length === 0 ? (
             <p className="text-sm font-mono text-secondary">No scans have run yet.</p>
