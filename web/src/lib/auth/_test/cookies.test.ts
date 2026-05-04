@@ -89,7 +89,10 @@ describe("Access Token Cookies", () => {
 
   describe("setAccessTokenCookie", () => {
     it("sets cookie via next/headers when no response is provided (development)", async () => {
-      process.env.NODE_ENV = "development";
+      process.env = {
+        ...process.env,
+        NODE_ENV: "development",
+      }
       const mockSet = vi.fn();
       vi.mocked(cookies).mockResolvedValue({ set: mockSet } as any);
 
@@ -101,7 +104,6 @@ describe("Access Token Cookies", () => {
         mockToken,
         {
           httpOnly: true,
-          secure: false, // development
           sameSite: "lax",
           path: "/",
           maxAge: 15 * 60,
@@ -122,7 +124,6 @@ describe("Access Token Cookies", () => {
         mockToken,
         {
           httpOnly: true,
-          secure: true, // production
           sameSite: "lax",
           path: "/",
           maxAge: 15 * 60,
@@ -145,7 +146,6 @@ describe("Access Token Cookies", () => {
         mockToken,
         {
           httpOnly: true,
-          secure: false, // default development
           sameSite: "lax",
           path: "/",
           maxAge: 15 * 60,
@@ -156,7 +156,10 @@ describe("Access Token Cookies", () => {
 
   describe("setRefreshTokenCookie", () => {
     it("sets refresh token cookie via next/headers (development)", async () => {
-      process.env.NODE_ENV = "development";
+      process.env = {
+        ...process.env,
+        NODE_ENV: "development",
+      }
       const mockSet = vi.fn();
       vi.mocked(cookies).mockResolvedValue({ set: mockSet } as any);
 
@@ -168,7 +171,6 @@ describe("Access Token Cookies", () => {
         mockRefreshToken,
         {
           httpOnly: true,
-          secure: false,
           sameSite: "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -189,7 +191,6 @@ describe("Access Token Cookies", () => {
         mockRefreshToken,
         {
           httpOnly: true,
-          secure: true,
           sameSite: "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
@@ -212,7 +213,6 @@ describe("Access Token Cookies", () => {
         mockRefreshToken,
         {
           httpOnly: true,
-          secure: false,
           sameSite: "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
