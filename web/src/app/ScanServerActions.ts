@@ -55,6 +55,7 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
       owner_id: user?.id ?? null,
       repoKey: repokeyEncrypted,
       priority: 1,
+      is_deep: input.isDeepScan,
     });
 
     // 3. Command the Scraper to start, giving it the exact ID and raw data
