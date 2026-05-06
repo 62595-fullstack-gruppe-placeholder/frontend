@@ -160,16 +160,6 @@ export function ExistingRepoCard({
             <span className="rounded px-2 py-1 border border-secondary/20 text-secondary">
               {repo.branch_config ?? "DEFAULT"}
             </span>
-
-            <span
-              className={`rounded px-2 py-1 border text-[10px] font-mono uppercase tracking-widest ${
-                repo.is_deep
-                  ? "text-purple-500 border-purple-500/20 bg-purple-500/10"
-                  : "text-sky-500 border-sky-500/20 bg-sky-500/10"
-              }`}
-            >
-              {repo.is_deep ? "⬛ Deep scan" : "◻ Shallow scan"}
-            </span>
           </div>
         </div>
 
