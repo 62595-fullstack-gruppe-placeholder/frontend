@@ -94,7 +94,7 @@ class GitHubSecretScanner:
             'Bearer Token': (r'bearer\s+[a-zA-Z0-9\-_=]+\.[a-zA-Z0-9\-_=]+\.[a-zA-Z0-9\-_=]+', 'HIGH'),
 
             'Google OAuth': (r'[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com', 'MEDIUM'),
-            'Generic API Key': (r'(?i)(api[_-]?key|apikey|secret[_-]?key|access[_-]?token|auth[_-]?token)[\s]*[:=][\s]*["\']?[a-zA-Z0-9_\-]{1,64}["\']?', 'MEDIUM'),
+            'Generic API Key': (r'(?i)(api[_-]?key|apikey)[\s]*[:=][\s]*["\']?[a-zA-Z0-9_\-]{6,64}["\']?', 'MEDIUM'),            
             'Algolia Key': (r'(?i)(algolia|search)[\-_]?api[\-_]?key[\s]*[:=][\s]*["\']?[0-9a-zA-Z]{32}["\']?', 'MEDIUM'),
             'Slack Webhook': (r'https://hooks\.slack\.com/services/[A-Z0-9]+/[A-Z0-9]+/[a-zA-Z0-9]+', 'MEDIUM'),
             'Discord Webhook': (r'https://discord(?:app)?\.com/api/webhooks/[0-9]+/[a-zA-Z0-9_-]+', 'MEDIUM'),
