@@ -34,13 +34,12 @@ except Exception as e:
     ".cfg", ".conf", ".config", ".env", ".sh", ".bash", ".zsh", ".fish",
     ".ps1", ".bat", ".cmd", ".txt", ".rst", ".tex", ".csv", ".sql"]
     print(f"JSON Erroasdr: {e}")
-    #Entropy prefix
 
-    BASE64_CHARSET  = set(string.ascii_letters + string.digits + "+/=")
-    URLSAFE_CHARSET = set(string.ascii_letters + string.digits + "-_=")
-    HEX_CHARSET     = set(string.hexdigits)
-    
-    FALSE_POSITIVE_PATTERNS = [
+BASE64_CHARSET  = set(string.ascii_letters + string.digits + "+/=")
+URLSAFE_CHARSET = set(string.ascii_letters + string.digits + "-_=")
+HEX_CHARSET     = set(string.hexdigits)
+
+FALSE_POSITIVE_PATTERNS = [
             re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.I),  # UUID
             re.compile(r'^[0-9a-f]{40}$'),          # git SHA1
             re.compile(r'^[0-9a-f]{64}$'),          # git SHA256
@@ -48,7 +47,6 @@ except Exception as e:
             re.compile(r'^[a-z]{20,}$'),            # all lowercase = probably a word/slug
             re.compile(r'^[A-Z][a-z]+([A-Z][a-z]+){3,}$'),  # CamelCase = probably a class name
         ]
-
 
 class GitHubSecretScanner:
     def __init__(self, repo_url, job_id, isDeepScan=False, extensions=defaultExtensions, repoKey=None):
