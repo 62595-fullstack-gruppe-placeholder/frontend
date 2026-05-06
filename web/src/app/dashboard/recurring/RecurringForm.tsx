@@ -151,7 +151,7 @@ export function RecurringForm({
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-3 outline-none text-text-main placeholder:text-secondary/70 font-mono text-sm focus:border-button-main transition-colors"
-              placeholder="Paste a Git repository URL"
+              placeholder="Paste a GitHub repository URL"
               required
             />
           </div>

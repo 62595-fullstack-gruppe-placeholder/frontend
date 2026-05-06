@@ -102,7 +102,7 @@ describe("RecurringForm", () => {
 
     render(<RecurringForm initialScans={[]} isDeep={false} extensions={new Set<string>()}/>);
 
-    fireEvent.change(screen.getByPlaceholderText("Paste a Git repository URL"), {
+    fireEvent.change(screen.getByPlaceholderText("Paste a GitHub repository URL"), {
       target: { value: "https://github.com/owner/repo" },
     });
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "DAILY" } });
@@ -130,7 +130,7 @@ describe("RecurringForm", () => {
     // Toggle to private
     fireEvent.click(screen.getByRole("button", { name: /private/i }));
 
-    fireEvent.change(screen.getByPlaceholderText("Paste a Git repository URL"), {
+    fireEvent.change(screen.getByPlaceholderText("Paste a GitHub repository URL"), {
       target: { value: "https://github.com/owner/private-repo" },
     });
     
@@ -159,7 +159,7 @@ describe("RecurringForm", () => {
 
     render(<RecurringForm initialScans={[]} isDeep={false} extensions={new Set<string>()}/>);
 
-    const input = screen.getByPlaceholderText("Paste a Git repository URL") as HTMLInputElement;
+    const input = screen.getByPlaceholderText("Paste a GitHub repository URL") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "https://github.com/owner/repo" } });
     fireEvent.click(screen.getByRole("button", { name: /schedule scan/i }));
 
@@ -177,7 +177,7 @@ describe("RecurringForm", () => {
     // Removed the invalid `repoKey={null}` prop that was here previously
     render(<RecurringForm initialScans={[]} isDeep={false} extensions={new Set<string>()} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Paste a Git repository URL"), {
+    fireEvent.change(screen.getByPlaceholderText("Paste a GitHub repository URL"), {
       target: { value: "not-a-url" },
     });
     fireEvent.click(screen.getByRole("button", { name: /schedule scan/i }));

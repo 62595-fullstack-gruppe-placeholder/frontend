@@ -109,15 +109,15 @@ function JobAccordion({
         className="flex items-center justify-between p-6 cursor-pointer hover:bg-white/5 transition-colors"
         onClick={() => setIsMainOpen(!isMainOpen)}
       >
-        <div className="flex items-center gap-4">
-          <div className="p-2 bg-button-main/20 rounded-lg">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="p-2 bg-button-main/20 rounded-lg flex-shrink-0">
             <ShieldCheck className="text-button-main" size={24} />
           </div>
-          <div>
+          <div className="truncate min-w-0 flex-1">
             <h2 className="text-[10px] font-mono text-secondary uppercase tracking-widest leading-none mb-1">
               Security report ({job.is_deep ? "deep scan" : "shallow scan"})
             </h2>
-            <h1 className="text-lg font-black text-text-main truncate max-w-[200px] md:max-w-md lg:max-w-full">
+            <h1 className="text-lg font-black text-text-main truncate">
               {job.repo_url.split("/").slice(-2).join("/")}
             </h1>
           </div>
@@ -157,7 +157,7 @@ function JobAccordion({
           <div onClick={(e) => e.stopPropagation()}>
             <CopyLinkButton
               label="Share scan"
-              link={`${process.env.NEXT_PUBLIC_APP_URL}/share/${job.id}`}
+              link={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${job.id}`}
             />
           </div>
           <div

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 const GITHUB_WEBHOOK_URL = "http://130.225.170.68/api/push-webhook";
-const REPO_REGISTRATION_URL = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/automatic`;
+const REPO_REGISTRATION_URL = `${process.env.NEXT_PUBLIC_APP_URL || ''}/dashboard/automatic`;
 
 export default function GithubWebhookSetupPage() {
   return (

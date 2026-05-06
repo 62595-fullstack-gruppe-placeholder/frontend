@@ -132,7 +132,7 @@ def test_scan_deep(mock_get_connection, insert_helpers):
 
         scanner.scan_all_branches(repo_path)
 
-        assert found_secret_count == 11, f"expected 11 secrets, got {found_secret_count}"
+        assert found_secret_count == 16, f"expected 16 secrets, got {found_secret_count}"
 
     finally:
         if repo_path and os.path.exists(repo_path):
