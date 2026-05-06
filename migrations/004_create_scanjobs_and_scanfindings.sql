@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS scan_jobs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   repo_url TEXT NOT NULL,
   status Status NOT NULL DEFAULT 'PENDING',
-  owner_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
   priority INTEGER NOT NULL DEFAULT 1 CHECK (priority BETWEEN 1 AND 5),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
