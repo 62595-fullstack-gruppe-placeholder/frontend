@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json("OK - no scan run", { status: 200 });
     }
 
-    await createScanJob({
+    const createdJob = await createScanJob({
       owner_id: listeningRepository.owner_id,
       priority: 3,
       repo_url: listeningRepository.repo_url,
@@ -64,6 +64,8 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        id: createdJob.id,
+        url: createdJob.repo_url,
         isDeepScan: listeningRepository.branch_config === "ALL",
         extensions: userSettings ? userSettings.extensions : [],
         repoKey: listeningRepository.repoKey
