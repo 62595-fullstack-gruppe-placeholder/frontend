@@ -15,6 +15,7 @@ export const listeningRepositorySchema = z.object({
   encrypted_secret: z.string().nullable().optional(),
   branch_config: branchConfigSchema,
   repoKey: z.string().nullable().optional(),
+  is_deep: z.boolean(),
 });
 
 export type ListeningRepository = z.infer<typeof listeningRepositorySchema>;
@@ -25,6 +26,7 @@ export const createListeningRepositorySchema = z.object({
   encrypted_secret: z.string().nullable().optional(),
   branch_config: branchConfigSchema.nullable().optional(),
   repoKey: z.string().nullable().optional(),
+  is_deep: z.boolean(),
 });
 
 export type CreateListeningRepository = z.infer<
@@ -39,6 +41,7 @@ export const createListeningRepositoryFormSchema = z.object({
   branch_config: branchConfigSchema.nullable().optional(),
   repoType: z.string().nullable().optional(),
   repoKey: z.string().nullable().optional(),
+  is_deep: z.boolean(),
 });
 
 export type CreateListeningRepositoryForm = z.infer<

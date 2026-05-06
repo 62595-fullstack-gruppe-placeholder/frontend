@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
       priority: 3,
       repo_url: listeningRepository.repo_url,
       listening_repository_id: listeningRepository.id,
+      is_deep: listeningRepository.is_deep,
     });
 
     const userSettings = await getUserSettingsById(
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        isDeepScan: false,
+        isDeepScan: listeningRepository.is_deep,
         extensions: userSettings ? userSettings.extensions : [],
         repoKey: listeningRepository.repoKey
           ? decrypt(listeningRepository.repoKey)

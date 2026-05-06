@@ -16,8 +16,8 @@ export async function createListeningRepository(
   const data = createListeningRepositorySchema.parse(input);
   const row = await queryOne<ListeningRepository>(
     `
-        INSERT INTO listening_repositories (owner_id, repo_url, encrypted_secret, branch_config, repoKey)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO listening_repositories (owner_id, repo_url, encrypted_secret, branch_config, repoKey, is_deep)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING
             owner_id,
             repo_url,
@@ -26,7 +26,8 @@ export async function createListeningRepository(
             created_at,
             id,
             branch_config,
-            repoKey
+            repoKey,
+            is_deep
         `,
     [
       data.owner_id,
@@ -34,6 +35,7 @@ export async function createListeningRepository(
       data.encrypted_secret,
       data.branch_config ?? "DEFAULT",
       data.repoKey ?? null,
+      data.is_deep,
     ],
   );
 
@@ -47,7 +49,7 @@ export async function createListeningRepository(
 export async function getUserListeningRepositories(userId: string) {
   const rows = await query<ListeningRepository>(
     `
-        SELECT owner_id, repo_url, encrypted_secret, is_active, created_at, id, branch_config, repoKey
+        SELECT owner_id, repo_url, encrypted_secret, is_active, created_at, id, branch_config, repoKey, is_deep
         FROM listening_repositories
         WHERE owner_id = $1
         `,
@@ -68,6 +70,7 @@ export async function getListeningRepositoryByUrl(repoUrl: string) {
             id,
             branch_config,
             repoKey,
+            is_deep
         FROM listening_repositories
         WHERE repo_url = $1
         `,

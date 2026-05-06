@@ -5,15 +5,16 @@ import { ListeningRepository } from "@/lib/repository/listeningRepository/listen
 import { CreateRepoForm } from "./CreateRepoForm";
 import { ExistingReposList } from "./ExistingReposList";
 import { ManagedListeningRepository } from "./repoTypes";
+
 function normalizeRepo(repo: ListeningRepository): ManagedListeningRepository {
   const typedRepo = repo as ManagedListeningRepository;
 
   return {
     ...repo,
-    is_active:
-      typeof typedRepo.is_active === "boolean" ? typedRepo.is_active : true,
+    is_active: typeof typedRepo.is_active === "boolean" ? typedRepo.is_active : true,
     branch_config: typedRepo.branch_config ?? "DEFAULT",
     webhook_secret: typedRepo.webhook_secret ?? null,
+    is_deep: typeof typedRepo.is_deep === "boolean" ? typedRepo.is_deep : false,
   };
 }
 
