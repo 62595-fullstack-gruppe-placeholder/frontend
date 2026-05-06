@@ -18,8 +18,8 @@ export async function createScanJob(input: CreateScanJobDTO): Promise<ScanJob> {
   // The status will default to "PENDING", so omitting it from the insertion.
   const row = await queryOne<ScanJob>(
     `
-      INSERT INTO scan_jobs (repo_url, owner_id, priority, repoKey, listening_repository_id)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO scan_jobs (repo_url, owner_id, priority, repoKey, listening_repository_id, is_deep)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING
         id,
         repo_url,
@@ -29,9 +29,10 @@ export async function createScanJob(input: CreateScanJobDTO): Promise<ScanJob> {
         status,
         created_at,
         duration,
+        is_deep,
         listening_repository_id
       `,
-    [data.repo_url, data.owner_id, data.priority, data.repoKey, data.listening_repository_id],
+    [data.repo_url, data.owner_id, data.priority, data.repoKey, data.listening_repository_id, data.is_deep],
   );
 
   if (!row) {
@@ -68,7 +69,7 @@ export async function getScanJobsByRecursiveScanId(
     `
     SELECT
       sj.id, sj.repo_url, sj.status, sj.owner_id, sj.priority,
-      sj.created_at, sj.duration, sj.recursive_scan_id,
+      sj.created_at, sj.duration, sj.is_deep, sj.recursive_scan_id,
       NULL as repoKey, -- Security: Prevent sending the ciphertext to the frontend
       COALESCE(COUNT(f.id), 0)::INTEGER as findings_count
     FROM scan_jobs sj
@@ -89,7 +90,7 @@ export async function getUserScanJobs(
   const rows = await query<ScanJobWithFindingsCount>(
     `
     SELECT 
-      sj.id, sj.repo_url, sj.status, sj.owner_id, sj.priority,
+      sj.id, sj.is_deep, sj.repo_url, sj.status, sj.owner_id, sj.priority,
       sj.created_at, sj.duration, sj.recursive_scan_id,
       NULL as repoKey, -- Security: Prevent sending the ciphertext to the frontend
       COALESCE(COUNT(f.id), 0)::INTEGER as findings_count

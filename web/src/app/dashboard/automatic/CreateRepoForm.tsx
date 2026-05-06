@@ -27,11 +27,13 @@ export function CreateRepoForm({
       branch_config: "DEFAULT",
       repoType: "public",
       repoKey: "",
+      is_deep: false,
     },
   });
 
   const branchConfig = form.watch("branch_config");
   const repoType = form.watch("repoType");
+  const isDeep = form.watch("is_deep");
 
   const handleSubmit = form.handleSubmit(async (data) => {
     setIsPending(true);
@@ -49,6 +51,7 @@ export function CreateRepoForm({
           repoKey: data.repoKey,
           branch_config: data.branch_config,
           is_active: true,
+          is_deep: data.is_deep,
         } as ManagedListeningRepository);
 
         form.reset({
@@ -57,7 +60,8 @@ export function CreateRepoForm({
           branch_config: "DEFAULT",
           repoType: "public",
           repoKey: "",
-         });
+          is_deep: false,
+        });
       } else {
         toast.error(result?.message || "Failed to register repository");
       }
@@ -119,14 +123,19 @@ export function CreateRepoForm({
             Personal access token
           </label>
           <div className="flex gap-2 items-center">
-            <Lock width={15} height={15} className="text-secondary" strokeWidth={2} />
+            <Lock
+              width={15}
+              height={15}
+              className="text-secondary"
+              strokeWidth={2}
+            />
             <input
               type="password"
               {...form.register("repoKey")}
               placeholder="Enter your personal access token"
-            className="field flex-1 px-3 py-2 font-mono text-sm border border-secondary/20 bg-text-main/5 rounded-md focus:ring-2 focus:ring-button-main/30 focus:border-button-main/40 outline-none transition-all"
+              className="field flex-1 px-3 py-2 font-mono text-sm border border-secondary/20 bg-text-main/5 rounded-md focus:ring-2 focus:ring-button-main/30 focus:border-button-main/40 outline-none transition-all"
               disabled={isPending}
-            /> 
+            />
           </div>
           <p className="uppercase text-[10px] font-mono text-secondary tracking-widest">
             Your token is encrypted and used only for this repository.
@@ -141,7 +150,12 @@ export function CreateRepoForm({
         <div className="flex gap-2 rounded-md border border-secondary/20 p-1 bg-text-main/5">
           <button
             type="button"
-            onClick={() => form.setValue("branch_config", "DEFAULT", { shouldValidate: true, shouldDirty: true })}
+            onClick={() =>
+              form.setValue("branch_config", "DEFAULT", {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
             disabled={isPending}
             className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
               branchConfig === "DEFAULT"
@@ -153,7 +167,12 @@ export function CreateRepoForm({
           </button>
           <button
             type="button"
-            onClick={() => form.setValue("branch_config", "ALL", { shouldValidate: true, shouldDirty: true })}
+            onClick={() =>
+              form.setValue("branch_config", "ALL", {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
             disabled={isPending}
             className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
               branchConfig === "ALL"
@@ -180,6 +199,51 @@ export function CreateRepoForm({
             </Link>
           </Button>
         </div>
+      </div>
+
+      <div className="space-y-3">
+        <label className="text-[10px] font-mono text-secondary uppercase tracking-widest block">
+          Scan depth
+        </label>
+        <div className="flex gap-2 rounded-md border border-secondary/20 p-1 bg-text-main/5">
+          <button
+            type="button"
+            onClick={() =>
+              form.setValue("is_deep", false, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
+            disabled={isPending}
+            className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
+              !isDeep
+                ? "bg-button-main/15 text-text-main border border-button-main/30"
+                : "text-secondary"
+            }`}
+          >
+            Shallow scan
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              form.setValue("is_deep", true, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
+            disabled={isPending}
+            className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
+              isDeep
+                ? "bg-button-main/15 text-text-main border border-button-main/30"
+                : "text-secondary"
+            }`}
+          >
+            Deep scan
+          </button>
+        </div>
+        <p className="uppercase text-[10px] font-mono text-secondary tracking-widest">
+          Shallow scans check only the default branch. Deep scans check all branches.
+        </p>
       </div>
 
       <div className="space-y-2">

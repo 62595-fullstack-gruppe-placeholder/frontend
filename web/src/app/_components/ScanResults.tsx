@@ -115,7 +115,7 @@ function JobAccordion({
           </div>
           <div className="truncate min-w-0 flex-1">
             <h2 className="text-[10px] font-mono text-secondary uppercase tracking-widest leading-none mb-1">
-              Security Report
+              Security report ({job.is_deep ? "deep scan" : "shallow scan"})
             </h2>
             <h1 className="text-lg font-black text-text-main truncate">
               {job.repo_url.split("/").slice(-2).join("/")}

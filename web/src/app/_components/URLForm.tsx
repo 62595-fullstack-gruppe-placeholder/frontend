@@ -53,12 +53,14 @@ export default function URLForm({ onScanStarted, hasUser, isDeepScan, extensions
       owner_id: null,
       priority: 1,
       isDeepScan,
+      is_deep: isDeepScan,
       extensions,
     };
 
     const result = await execute(input);
     if (result.success) {
       onScanStarted(result.findings, result.jobs);
+      form.reset();
     }
   });
 

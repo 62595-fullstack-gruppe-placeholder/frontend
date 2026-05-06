@@ -120,7 +120,7 @@ export default function Home() {
           weaknesses.
         </p>
 
-        <URLForm onScanStarted={handleScanSuccess} hasUser={isAuthenticated} isDeepScan={false} extensions={selected} />
+        <URLForm onScanStarted={handleScanSuccess} hasUser={isAuthenticated} isDeepScan={isDeepScan} extensions={selected}/>
         <ScanOptions isDisabled={!isAuthenticated} isDeep={settings?.isDeep ?? false} onDeepChange={(isDeep) => setIsDeepScan(isDeep)} />
         <IgnoreSettingsButtons onSelectedChange={(selected) => setSelected(selected)} extensions={selected} />
       </div>
