@@ -185,34 +185,11 @@ def create_recursive_scan():
         return jsonify({'error': str(e)}), 500
 
 
-# ---- Mock tier endpoints ----
-
-@app.route('/admin/upgrade', methods=['POST'])
-def upgrade_user():
-    try:
-        data = request.get_json()
-        if not data or 'userId' not in data:
-            return jsonify({'error': 'userId is required'}), 400
-        updated = setUserTier(data['userId'], 'pro')
-        if not updated:
-            return jsonify({'error': 'User not found'}), 404
-        return jsonify({'success': True, 'userId': data['userId'], 'tier': 'pro'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
-@app.route('/admin/downgrade', methods=['POST'])
-def downgrade_user():
-    try:
-        data = request.get_json()
-        if not data or 'userId' not in data:
-            return jsonify({'error': 'userId is required'}), 400
-        updated = setUserTier(data['userId'], 'free')
-        if not updated:
-            return jsonify({'error': 'User not found'}), 404
-        return jsonify({'success': True, 'userId': data['userId'], 'tier': 'free'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+
+
+
 
 
 # Main entry point

@@ -105,43 +105,6 @@ def test_scan_defaults_to_free_queue_when_no_user(client):
 
 
 # =========================================
-#         Admin tier endpoint tests
-# =========================================
-
-FAKE_USER_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
-
-def test_upgrade_user_success(client):
-    with patch('api.setUserTier', return_value=True) as mock_set:
-        response = client.post('/admin/upgrade', json={"userId": FAKE_USER_ID})
-    assert response.status_code == 200
-    assert response.json['success'] is True
-    assert response.json['tier'] == 'pro'
-    mock_set.assert_called_once_with(FAKE_USER_ID, 'pro')
-
-def test_upgrade_user_not_found(client):
-    with patch('api.setUserTier', return_value=False):
-        response = client.post('/admin/upgrade', json={"userId": FAKE_USER_ID})
-    assert response.status_code == 404
-
-def test_upgrade_user_missing_id(client):
-    response = client.post('/admin/upgrade', json={})
-    assert response.status_code == 400
-
-def test_downgrade_user_success(client):
-    with patch('api.setUserTier', return_value=True) as mock_set:
-        response = client.post('/admin/downgrade', json={"userId": FAKE_USER_ID})
-    assert response.status_code == 200
-    assert response.json['success'] is True
-    assert response.json['tier'] == 'free'
-    mock_set.assert_called_once_with(FAKE_USER_ID, 'free')
-
-def test_downgrade_user_not_found(client):
-    with patch('api.setUserTier', return_value=False):
-        response = client.post('/admin/downgrade', json={"userId": FAKE_USER_ID})
-    assert response.status_code == 404
-
-
-# =========================================
 #        Recursive scan endpoint tests
 # =========================================
 
