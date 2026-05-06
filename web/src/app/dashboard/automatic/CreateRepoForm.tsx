@@ -174,7 +174,7 @@ export function CreateRepoForm({
             variant="outline"
             className="w-full justify-center border-secondary/20 bg-transparent font-mono text-[10px] uppercase tracking-widest text-secondary hover:bg-text-main/5 hover:text-text-main"
           >
-            <Link href={process.env.NEXT_PUBLIC_APP_URL + "/dashboard/automatic/howto"} target="_blank">
+            <Link href={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/automatic/howto`} target="_blank">
               <CircleHelp size={14} />
               Webhook setup guide
             </Link>
