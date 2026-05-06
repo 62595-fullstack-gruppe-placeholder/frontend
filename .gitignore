@@ -71,3 +71,4 @@ cron/*.log
 # token encryption key
 .env.local
 .env*.local
+.env

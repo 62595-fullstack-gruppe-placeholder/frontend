@@ -15,6 +15,7 @@ COPY logic.py .
 COPY api.py .
 COPY repository.py .
 COPY tasks.py .
+COPY encryption.py .
 COPY tests/ ./tests/
 # Copy tests into image so they are available when running `pytest` inside
 # the container.  The build context already includes the `tests/` directory.

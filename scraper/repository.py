@@ -186,11 +186,11 @@ def getDueRecursiveScans():
         conn = get_connection()
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT id, repo_url, repoKey, interval, is_deep_scan, extensions "
+                "SELECT id, repo_url, repoKey, interval, is_deep_scan, extensions, owner_id "
                 "FROM recursive_scans WHERE is_active = true AND next_run_at <= NOW()"
             )
             rows = cur.fetchall()
-            keys = ["id", "repo_url", "repoKey", "interval", "is_deep_scan", "extensions"]
+            keys = ["id", "repo_url", "repoKey", "interval", "is_deep_scan", "extensions", "owner_id"]
             return [dict(zip(keys, r)) for r in rows]
     finally:
         if conn:
