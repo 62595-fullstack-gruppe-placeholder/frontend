@@ -15,7 +15,7 @@ END$$;
 CREATE TABLE IF NOT EXISTS recursive_scans (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   repo_url TEXT NOT NULL,
-  owner_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
   interval scan_interval NOT NULL DEFAULT 'WEEKLY',
   is_deep_scan BOOLEAN NOT NULL DEFAULT false,
   is_active BOOLEAN NOT NULL DEFAULT true,
