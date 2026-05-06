@@ -11,7 +11,7 @@ describe('IgnoreSettingsButtons', () => {
     mockOnSelectedChange.mockClear();
   });
 
-  it('should render the ignore settings section header', () => {
+  it('should render the scan settings section header', () => {
     render(
       <IgnoreSettingsButtons
         extensions={defaultExtensions}
@@ -19,7 +19,7 @@ describe('IgnoreSettingsButtons', () => {
       />
     );
 
-    expect(screen.getByText('Ignore settings')).toBeInTheDocument();
+    expect(screen.getByText('Scan Settings')).toBeInTheDocument();
   });
 
   it('should start with settings hidden and show on click', async () => {
@@ -36,7 +36,7 @@ describe('IgnoreSettingsButtons', () => {
     expect(settingsContent).not.toBeInTheDocument();
 
     // Click to expand
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
 
     settingsContent = container.querySelector('.space-y-4');
@@ -52,7 +52,7 @@ describe('IgnoreSettingsButtons', () => {
       />
     );
 
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
 
     // First click - expand
     await user.click(header!);
@@ -75,8 +75,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand the settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category (where .ts, .js, .py are)
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     // Extensions should be visible as labels
     expect(screen.getByLabelText('.ts')).toBeInTheDocument();
@@ -95,8 +99,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand to see checkboxes
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     const tsCheckbox = screen.getByLabelText('.ts');
     const jsCheckbox = screen.getByLabelText('.js');
@@ -117,8 +125,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     const tsCheckbox = screen.getByLabelText('.ts');
     await user.click(tsCheckbox);
@@ -146,8 +158,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     const jsCheckbox = screen.getByLabelText('.js');
     await user.click(jsCheckbox);
@@ -168,11 +184,15 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
 
-    const selectAllButton = screen.getByText('Select all');
-    await user.click(selectAllButton);
+    // Find the global "Select all" button (not the category ones)
+    const selectAllButtons = screen.getAllByText('Select all');
+    const globalSelectAllButton = selectAllButtons.find(button => 
+      button.classList.contains('bg-button-main')
+    );
+    await user.click(globalSelectAllButton!);
 
     const callArg = mockOnSelectedChange.mock.calls[0][0];
     expect(callArg.size).toBeGreaterThan(0);
@@ -191,11 +211,15 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
 
-    const deselectAllButton = screen.getByText('Deselect all');
-    await user.click(deselectAllButton);
+    // Find the global "Deselect all" button (not the category ones)
+    const deselectAllButtons = screen.getAllByText('Deselect all');
+    const globalDeselectAllButton = deselectAllButtons.find(button => 
+      button.classList.contains('bg-secondary')
+    );
+    await user.click(globalDeselectAllButton!);
 
     const callArg = mockOnSelectedChange.mock.calls[0][0];
     expect(callArg.size).toBe(0);
@@ -211,8 +235,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     let tsCheckbox = screen.getByLabelText('.ts');
     expect(tsCheckbox).toHaveAttribute('aria-checked', 'true');
@@ -242,14 +270,22 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
 
-    const selectAllButton = screen.getByText('Select all');
-    const deselectAllButton = screen.getByText('Deselect all');
+    // Find the global buttons by their specific classes
+    const selectAllButtons = screen.getAllByText('Select all');
+    const globalSelectAllButton = selectAllButtons.find(button => 
+      button.classList.contains('bg-button-main')
+    );
+    
+    const deselectAllButtons = screen.getAllByText('Deselect all');
+    const globalDeselectAllButton = deselectAllButtons.find(button => 
+      button.classList.contains('bg-secondary')
+    );
 
-    expect(selectAllButton).toHaveClass('bg-button-main');
-    expect(deselectAllButton).toHaveClass('bg-secondary');
+    expect(globalSelectAllButton).toHaveClass('bg-button-main');
+    expect(globalDeselectAllButton).toHaveClass('bg-secondary');
   });
 
   it('should maintain callback identity with useCallback', async () => {
@@ -262,8 +298,12 @@ describe('IgnoreSettingsButtons', () => {
     );
 
     // Expand settings
-    const header = screen.getByText('Ignore settings').closest('div')?.parentElement;
+    const header = screen.getByText('Scan Settings').closest('div')?.parentElement;
     await user.click(header!);
+
+    // Expand the Programming Languages category
+    const programmingCategory = screen.getByText('Programming Languages');
+    await user.click(programmingCategory);
 
     const tsCheckbox1 = screen.getByLabelText('.ts');
     await user.click(tsCheckbox1);
