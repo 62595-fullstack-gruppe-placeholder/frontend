@@ -9,13 +9,8 @@ vi.mock("server-only", () => ({}));
 const mockAdmin = { id: "admin-id", is_admin: true };
 const mockNonAdmin = { id: "user-id", is_admin: false };
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-vi.stubGlobal("fetch", mockFetch);
-
 beforeEach(() => {
   vi.clearAllMocks();
-  mockFetch.mockResolvedValue({ ok: true });
 });
 
 describe("getAllUsersAction", () => {
@@ -47,19 +42,14 @@ describe("getAllUsersAction", () => {
 });
 
 describe("upgradeUserAction", () => {
-  it("calls scraper upgrade endpoint with userId", async () => {
+  it("calls setUserTier with pro for userId", async () => {
     (authModule.getUser as any).mockResolvedValue(mockAdmin);
+    (userRepoModule.setUserTier as any).mockResolvedValue(true);
 
     const { upgradeUserAction } = await import("../adminActions");
     await upgradeUserAction("target-user-id");
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      "http://scraper:5001/admin/upgrade",
-      expect.objectContaining({
-        method: "POST",
-        body: JSON.stringify({ userId: "target-user-id" }),
-      })
-    );
+    expect(userRepoModule.setUserTier).toHaveBeenCalledWith("target-user-id", "pro");
   });
 
   it("throws Unauthorized when called by non-admin", async () => {
@@ -67,32 +57,27 @@ describe("upgradeUserAction", () => {
 
     const { upgradeUserAction } = await import("../adminActions");
     await expect(upgradeUserAction("target-user-id")).rejects.toThrow("Unauthorized");
-    expect(mockFetch).not.toHaveBeenCalled();
+    expect(userRepoModule.setUserTier).not.toHaveBeenCalled();
   });
 
-  it("throws when scraper returns non-ok response", async () => {
+  it("throws when user not found", async () => {
     (authModule.getUser as any).mockResolvedValue(mockAdmin);
-    mockFetch.mockResolvedValue({ ok: false });
+    (userRepoModule.setUserTier as any).mockResolvedValue(false);
 
     const { upgradeUserAction } = await import("../adminActions");
-    await expect(upgradeUserAction("target-user-id")).rejects.toThrow("Failed to upgrade user");
+    await expect(upgradeUserAction("target-user-id")).rejects.toThrow("User not found");
   });
 });
 
 describe("downgradeUserAction", () => {
-  it("calls scraper downgrade endpoint with userId", async () => {
+  it("calls setUserTier with free for userId", async () => {
     (authModule.getUser as any).mockResolvedValue(mockAdmin);
+    (userRepoModule.setUserTier as any).mockResolvedValue(true);
 
     const { downgradeUserAction } = await import("../adminActions");
     await downgradeUserAction("target-user-id");
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      "http://scraper:5001/admin/downgrade",
-      expect.objectContaining({
-        method: "POST",
-        body: JSON.stringify({ userId: "target-user-id" }),
-      })
-    );
+    expect(userRepoModule.setUserTier).toHaveBeenCalledWith("target-user-id", "free");
   });
 
   it("throws Unauthorized when called by non-admin", async () => {
@@ -100,15 +85,15 @@ describe("downgradeUserAction", () => {
 
     const { downgradeUserAction } = await import("../adminActions");
     await expect(downgradeUserAction("target-user-id")).rejects.toThrow("Unauthorized");
-    expect(mockFetch).not.toHaveBeenCalled();
+    expect(userRepoModule.setUserTier).not.toHaveBeenCalled();
   });
 
-  it("throws when scraper returns non-ok response", async () => {
+  it("throws when user not found", async () => {
     (authModule.getUser as any).mockResolvedValue(mockAdmin);
-    mockFetch.mockResolvedValue({ ok: false });
+    (userRepoModule.setUserTier as any).mockResolvedValue(false);
 
     const { downgradeUserAction } = await import("../adminActions");
-    await expect(downgradeUserAction("target-user-id")).rejects.toThrow("Failed to downgrade user");
+    await expect(downgradeUserAction("target-user-id")).rejects.toThrow("User not found");
   });
 });
 
