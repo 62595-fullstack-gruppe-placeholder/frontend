@@ -201,51 +201,6 @@ export function CreateRepoForm({
         </div>
       </div>
 
-      <div className="space-y-3">
-        <label className="text-[10px] font-mono text-secondary uppercase tracking-widest block">
-          Scan depth
-        </label>
-        <div className="flex gap-2 rounded-md border border-secondary/20 p-1 bg-text-main/5">
-          <button
-            type="button"
-            onClick={() =>
-              form.setValue("is_deep", false, {
-                shouldValidate: true,
-                shouldDirty: true,
-              })
-            }
-            disabled={isPending}
-            className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
-              !isDeep
-                ? "bg-button-main/15 text-text-main border border-button-main/30"
-                : "text-secondary"
-            }`}
-          >
-            Shallow scan
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              form.setValue("is_deep", true, {
-                shouldValidate: true,
-                shouldDirty: true,
-              })
-            }
-            disabled={isPending}
-            className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-xs font-mono uppercase tracking-widest transition-all ${
-              isDeep
-                ? "bg-button-main/15 text-text-main border border-button-main/30"
-                : "text-secondary"
-            }`}
-          >
-            Deep scan
-          </button>
-        </div>
-        <p className="uppercase text-[10px] font-mono text-secondary tracking-widest">
-          Shallow scans check only the default branch. Deep scans check all branches.
-        </p>
-      </div>
-
       <div className="space-y-2">
         <label className="text-[10px] font-mono text-secondary uppercase tracking-widest block mb-2">
           Webhook secret (optional)
