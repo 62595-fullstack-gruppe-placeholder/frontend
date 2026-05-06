@@ -53,6 +53,7 @@ export default function URLForm({ onScanStarted, hasUser, isDeepScan, extensions
       owner_id: null,
       priority: 1,
       isDeepScan,
+      is_deep: isDeepScan,
       extensions,
     };
 
