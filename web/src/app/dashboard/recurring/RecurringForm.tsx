@@ -1,8 +1,20 @@
 "use client";
 
 import { useState, useTransition, useEffect, useCallback } from "react";
-import { Search, Trash2, Pause, Play, RefreshCw, ChevronDown, Lock } from "lucide-react";
-import { RecursiveScan, SCAN_INTERVALS, ScanInterval } from "@/lib/repository/recursiveScan/recursiveScanSchema";
+import {
+  Search,
+  Trash2,
+  Pause,
+  Play,
+  RefreshCw,
+  ChevronDown,
+  Lock,
+} from "lucide-react";
+import {
+  RecursiveScan,
+  SCAN_INTERVALS,
+  ScanInterval,
+} from "@/lib/repository/recursiveScan/recursiveScanSchema";
 import {
   createRecursiveScanAction,
   deleteRecursiveScanAction,
@@ -25,16 +37,16 @@ const INTERVAL_LABELS: Record<ScanInterval, string> = {
   YEARLY: "Every year",
 };
 
-export function RecurringForm({ 
-  initialScans, 
-  isDeep, 
+export function RecurringForm({
+  initialScans,
+  isDeep,
   extensions,
-  hasUser = true // Added hasUser to determine if private scans are allowed
-}: { 
-  initialScans: RecursiveScan[], 
-  isDeep: boolean, 
-  extensions: Set<string>,
-  hasUser?: boolean 
+  hasUser = true, // Added hasUser to determine if private scans are allowed
+}: {
+  initialScans: RecursiveScan[];
+  isDeep: boolean;
+  extensions: Set<string>;
+  hasUser?: boolean;
 }) {
   const [url, setUrl] = useState("");
   const [repoType, setRepoType] = useState<"public" | "private">("public");
@@ -59,16 +71,16 @@ export function RecurringForm({
     setError(null);
     startTransition(async () => {
       // Pass the repoKey only if the repository is private
-      const finalRepoKey = (hasUser && repoType === "private") ? repoKey : null;
-      
+      const finalRepoKey = hasUser && repoType === "private" ? repoKey : null;
+
       const result = await createRecursiveScanAction(
-        url, 
-        interval, 
-        isDeepScan, 
+        url,
+        interval,
+        isDeepScan,
         extensionsState,
         finalRepoKey,
       );
-      
+
       if (!result.success) {
         setError(result.error ?? "Something went wrong");
       } else {
@@ -87,7 +99,9 @@ export function RecurringForm({
           <div className="p-2 bg-secondary/10 rounded-lg">
             <RefreshCw className="text-text-main" size={18} />
           </div>
-          <h2 className="text-lg font-bold text-text-main font-mono">Schedule a recurring scan</h2>
+          <h2 className="text-lg font-bold text-text-main font-mono">
+            Schedule a recurring scan
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
@@ -108,9 +122,11 @@ export function RecurringForm({
                   disabled={type === "private" && !hasUser}
                   className={`
                     px-4 py-1.5 text-xs font-mono capitalize transition-all outline-none border-r border-border last:border-r-0
-                    ${repoType === type
-                      ? "bg-secondary/20 text-text-main"
-                      : "bg-transparent text-secondary hover:bg-background/50"}
+                    ${
+                      repoType === type
+                        ? "bg-secondary/20 text-text-main"
+                        : "bg-transparent text-secondary hover:bg-background/50"
+                    }
                     disabled:opacity-40 disabled:cursor-not-allowed
                   `}
                 >
@@ -144,7 +160,12 @@ export function RecurringForm({
           {hasUser && repoType === "private" && (
             <div className="relative w-full animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none pb-[26px]">
-                <Lock width={15} height={15} className="text-secondary" strokeWidth={2} />
+                <Lock
+                  width={15}
+                  height={15}
+                  className="text-secondary"
+                  strokeWidth={2}
+                />
               </div>
               <input
                 type="password"
@@ -160,6 +181,30 @@ export function RecurringForm({
             </div>
           )}
 
+          {/* Scan depth toggle */}
+          <div className="flex items-center gap-4">
+            <span className="text-secondary text-[10px] tracking-[0.14em] uppercase font-mono mt-0.5">
+              Scan depth
+            </span>
+            <div className="flex border border-border rounded-lg overflow-hidden">
+              {([false, true] as const).map((deep) => (
+                <button
+                  key={String(deep)}
+                  type="button"
+                  onClick={() => setIsDeepScan(deep)}
+                  disabled={isPending}
+                  className={`px-4 py-1.5 text-xs font-mono capitalize transition-all outline-none border-r border-border last:border-r-0 disabled:opacity-50 ${
+                    isDeepScan === deep
+                      ? "bg-secondary/20 text-text-main"
+                      : "bg-transparent text-secondary hover:bg-background/50"
+                  }`}
+                >
+                  {deep ? "Deep" : "Shallow"}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* ROW 3: Interval and Submit */}
           <div className="flex items-center justify-between gap-4 w-full mt-2 pt-2 border-t border-border/50">
             <div className="flex items-center gap-3">
@@ -172,7 +217,9 @@ export function RecurringForm({
                 className="bg-background border border-border rounded-lg px-3 py-2 text-text-main outline-none focus:border-button-main font-mono text-sm"
               >
                 {SCAN_INTERVALS.map((i) => (
-                  <option key={i} value={i}>{INTERVAL_LABELS[i]}</option>
+                  <option key={i} value={i}>
+                    {INTERVAL_LABELS[i]}
+                  </option>
                 ))}
               </select>
             </div>
@@ -186,18 +233,24 @@ export function RecurringForm({
             </button>
           </div>
 
-          {error && <p className="text-xs text-red-500 font-mono mt-1 ml-1">{error}</p>}
+          {error && (
+            <p className="text-xs text-red-500 font-mono mt-1 ml-1">{error}</p>
+          )}
         </form>
       </div>
 
       {/* Existing schedules */}
       <div className="w-full max-w-2xl bg-box border border-border rounded-[14px] overflow-hidden">
         <div className="p-6 border-b border-border">
-          <h2 className="text-lg font-bold text-text-main font-mono">Your recurring scans</h2>
+          <h2 className="text-lg font-bold text-text-main font-mono">
+            Your recurring scans
+          </h2>
         </div>
 
         {initialScans.length === 0 ? (
-          <p className="p-6 text-secondary font-mono text-sm">No recurring scans yet.</p>
+          <p className="p-6 text-secondary font-mono text-sm">
+            No recurring scans yet.
+          </p>
         ) : (
           <ul className="divide-y divide-border">
             {initialScans.map((scan) => (
@@ -235,19 +288,23 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
   }, [isExpanded, fetchResults]);
 
   function handleDelete() {
-    startTransition(async () => { await deleteRecursiveScanAction(scan.id); });
+    startTransition(async () => {
+      await deleteRecursiveScanAction(scan.id);
+    });
   }
 
   function handleToggle() {
-    startTransition(async () => { await toggleRecursiveScanAction(scan.id); });
+    startTransition(async () => {
+      await toggleRecursiveScanAction(scan.id);
+    });
   }
 
   function handleRunNow() {
     startTransition(async () => {
-    await runRecursiveScanNowAction(scan.id);
-    setTimeout(() => fetchResults(), 2000);
-  });
-}
+      await runRecursiveScanNowAction(scan.id);
+      setTimeout(() => fetchResults(), 2000);
+    });
+  }
 
   function handleExpand() {
     setIsExpanded((v) => !v);
@@ -260,19 +317,31 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
           className="flex-1 min-w-0 text-left outline-none"
           onClick={handleExpand}
         >
-          <p className="text-text-main font-mono text-sm truncate">{scan.repo_url}</p>
+          <p className="text-text-main font-mono text-sm truncate">
+            {scan.repo_url}
+          </p>
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-secondary font-mono">
-            <span className="bg-secondary/10 px-2 py-0.5 rounded-md">{INTERVAL_LABELS[scan.interval]}</span>
-            <span className="bg-secondary/10 px-2 py-0.5 rounded-md">{scan.is_deep_scan ? "Deep scan" : "Shallow scan"}</span>
+            <span className="bg-secondary/10 px-2 py-0.5 rounded-md">
+              {INTERVAL_LABELS[scan.interval]}
+            </span>
+            <span className="bg-secondary/10 px-2 py-0.5 rounded-md">
+              {scan.is_deep_scan ? "Deep scan" : "Shallow scan"}
+            </span>
             {scan.last_run_at && (
-              <span className="flex items-center">Last: {new Date(scan.last_run_at).toLocaleDateString()}</span>
+              <span className="flex items-center">
+                Last: {new Date(scan.last_run_at).toLocaleDateString()}
+              </span>
             )}
-            <span className="flex items-center">Next: {new Date(scan.next_run_at).toLocaleDateString()}</span>
+            <span className="flex items-center">
+              Next: {new Date(scan.next_run_at).toLocaleDateString()}
+            </span>
           </div>
         </button>
 
         <div className="flex items-center gap-2">
-          <span className={`text-[10px] tracking-wider uppercase font-mono px-2.5 py-1 rounded-full ${scan.is_active ? "bg-button-main/20 text-button-main" : "bg-secondary/20 text-secondary"}`}>
+          <span
+            className={`text-[10px] tracking-wider uppercase font-mono px-2.5 py-1 rounded-full ${scan.is_active ? "bg-button-main/20 text-button-main" : "bg-secondary/20 text-secondary"}`}
+          >
             {scan.is_active ? "Active" : "Paused"}
           </span>
 
@@ -304,11 +373,14 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
               <Trash2 size={14} />
             </button>
 
-            <button 
-              onClick={handleExpand} 
+            <button
+              onClick={handleExpand}
               className="p-2 bg-background hover:bg-secondary/10 text-secondary hover:text-text-main transition-colors"
             >
-              <ChevronDown size={14} className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
+              <ChevronDown
+                size={14}
+                className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+              />
             </button>
           </div>
         </div>
@@ -317,9 +389,13 @@ function RecurringScanRow({ scan }: { scan: RecursiveScan }) {
       {isExpanded && (
         <div className="px-6 pb-6 pt-2 border-t border-border/50 bg-box">
           {isFetching && jobs === null ? (
-            <p className="text-sm font-mono text-secondary">Loading results...</p>
+            <p className="text-sm font-mono text-secondary">
+              Loading results...
+            </p>
           ) : jobs && jobs.length === 0 ? (
-            <p className="text-sm font-mono text-secondary">No scans have run yet.</p>
+            <p className="text-sm font-mono text-secondary">
+              No scans have run yet.
+            </p>
           ) : (
             <ScanResults jobs={jobs} findings={findings} />
           )}
