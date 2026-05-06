@@ -52,7 +52,7 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           cd /home/${{ secrets.VM_USERNAME }}/reporacoon
-          echo "TOKEN_ENCRYPTION_KEY=${{ secrets.TOKEN_ENCRYPTION_KEY }}" > .env
+          echo "ENCRYPTION_SECRET=${{ secrets.ENCRYPTION_SECRET }}" > .env
           git pull origin main
           chmod +x cron/*
           docker compose pull

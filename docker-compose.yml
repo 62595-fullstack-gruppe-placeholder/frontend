@@ -58,7 +58,7 @@ services:
     networks:
       - app-network
     env_file:
-      - ./web/.env.local
+      - ./.env
 
   redis:
     image: redis:7-alpine
