@@ -157,7 +157,7 @@ function JobAccordion({
           <div onClick={(e) => e.stopPropagation()}>
             <CopyLinkButton
               label="Share scan"
-              link={`${process.env.NEXT_PUBLIC_APP_URL}/share/${job.id}`}
+              link={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${job.id}`}
             />
           </div>
           <div
