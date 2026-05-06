@@ -32,7 +32,6 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
   try {
     const user = await getUser();
     
-    // 1. Validate URL with Python service
     const validateResponse = await fetch("http://scraper:5001/validate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,7 +46,6 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
       return { success: false, error: validateData.message ?? "Invalid GitHub URL." };
     }
 
-    // 2. Encrypt Token & Create Job in DB (Next.js is the Boss)
     const repokeyEncrypted = input.repoKey != null ? encrypt(input.repoKey) : null;
     
     const job = await createScanJobServerAction({
@@ -58,14 +56,13 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
       is_deep: input.isDeepScan,
     });
 
-    // 3. Command the Scraper to start, giving it the exact ID and raw data
     const scanResponse = await fetch("http://scraper:5001/scan", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        id: job.id, // TELL python the ID
-        url: input.url, // TELL python the URL
-        repoKey: input.repoKey, // Unencrypted key
+        id: job.id, 
+        url: input.url, 
+        repoKey: input.repoKey, 
         isDeepScan: input.isDeepScan, 
         extensions: Array.from(input.extensions),
         userId: user?.id ?? null
@@ -76,7 +73,6 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
       return { success: false, error: "Failed to queue scan in the worker." };
     }
 
-    // 4. Poll using the ID Next.js generated
     const POLL_INTERVAL_MS = 2000;
     const TIMEOUT_MS = 5 * 60 * 1000;
     const deadline = Date.now() + TIMEOUT_MS;
@@ -95,10 +91,10 @@ export async function scan(input: CreateScanJobDTO & { url: string; repoKey: str
       return { success: false, error: "Scan failed. Please try again." };
     }
 
-    // 5. Fetch results & cleanup
+    // Fetch results & cleanup
     const findings = await getFindingsByJobIdServerAction(job.id);
     
-    // Deleting the token after a one-off scan is a fantastic security practice!
+    // Deleting the token after a one-off scan
     await clearScanJobToken(job.id);
 
     return {
