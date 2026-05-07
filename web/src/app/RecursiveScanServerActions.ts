@@ -11,7 +11,7 @@ import { createRecursiveScanDTOSchema, ScanInterval } from "@/lib/repository/rec
 import { getScanJobsByRecursiveScanId } from "@/lib/repository/scanJob/scanJobRepository";
 import { getFindingsByJobId } from "@/lib/repository/scanFinding/scanFindingRepository";
 import { revalidatePath } from "next/cache";
-import { encrypt, decrypt } from "@/lib/encryption"; 
+import { encrypt } from "@/lib/encryption";
 
 export async function createRecursiveScanAction(
   url: string, 
@@ -49,11 +49,11 @@ export async function createRecursiveScanAction(
   await fetch("http://scraper:5001/recursive-scan", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      id: newScan.id, 
-      url: url, 
-      repoKey: repoKey, 
-      isDeepScan: isDeepScan, 
+    body: JSON.stringify({
+      id: newScan.id,
+      url: url,
+      repoKey: repokeyEncrypted,
+      isDeepScan: isDeepScan,
       extensions: extensionsArray,
       owner_id: user.id
     }),
