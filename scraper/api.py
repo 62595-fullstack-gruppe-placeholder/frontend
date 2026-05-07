@@ -6,6 +6,7 @@ import re
 import requests
 from repository import *
 from tasks import run_scan_job_pro, run_scan_job_free, run_recursive_scan_job_pro, run_recursive_scan_job_free
+from encryption import encrypt
 
 VALID_INTERVALS = {"EVERY_MINUTE", "HOURLY", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"}
 
@@ -49,6 +50,8 @@ def check_repo_exists(owner, repo, repoKey=None):
             return False, "Repository not found or no access", None
         elif response.status_code == 401:
             return False, "Invalid or expired access token", None
+        elif response.status_code == 403:
+            return False, "Access forbidden - token may lack required permissions", None
         else:
             return False, f"Unexpected status code: {response.status_code}", None
             
@@ -167,14 +170,17 @@ def create_recursive_scan():
         if not is_valid:
             return jsonify({'error': message}), 400
 
+        # Workers always call decrypt(), so always pass an encrypted token
+        encrypted_key = encrypt(repoKey) if repoKey else None
+
         # Enqueue via Celery based on tier
         tier = getUserTier(owner_id) if owner_id else "free"
         task = run_recursive_scan_job_pro if tier == "pro" else run_recursive_scan_job_free
-        
+
         task.delay(
             scan_id,
             url,
-            repoKey,
+            encrypted_key,
             is_deep_scan,
             extensions,
         )
@@ -183,13 +189,6 @@ def create_recursive_scan():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-
-
-
-
-
-
 
 
 # Main entry point
