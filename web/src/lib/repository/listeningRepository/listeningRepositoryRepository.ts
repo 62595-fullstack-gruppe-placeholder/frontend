@@ -78,6 +78,12 @@ export async function getListeningRepositoryByUrl(repoUrl: string) {
   );
 
   if (!row) return null;
+  
+  if (typeof (row as any).repokey === "string") {
+    // for some weird reason, the repo key is sometimes returned as 'repokey' instead of 'repoKey',
+    // so we handle this by copying its value to row.repoKey
+    return listeningRepositorySchema.parse({...row, repoKey: (row as any).repokey});
+  }
 
   return listeningRepositorySchema.parse(row);
 }

@@ -21,7 +21,7 @@ export async function newListeningRepo(form: CreateListeningRepositoryForm) {
       repo_url: formData.repoUrl,
       encrypted_secret: formData.webhookSecret ? encrypt(formData.webhookSecret) : null,
       branch_config: formData.branch_config,
-      repoKey: formData.repoKey,
+      repoKey: formData.repoKey ? encrypt(formData.repoKey) : null,
       is_deep: formData.is_deep,
     });
     return {

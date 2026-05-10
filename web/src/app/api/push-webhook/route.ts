@@ -48,12 +48,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json("OK - no scan run", { status: 200 });
     }
 
+    const decryptedRepoKey = listeningRepository.repoKey ? decrypt(listeningRepository.repoKey) : null;
+
     const createdJob = await createScanJob({
       owner_id: listeningRepository.owner_id,
       priority: 3,
       repo_url: listeningRepository.repo_url,
       listening_repository_id: listeningRepository.id,
       is_deep: listeningRepository.branch_config === "ALL",
+      repoKey: decryptedRepoKey,
     });
 
     const userSettings = await getUserSettingsById(
@@ -68,9 +71,7 @@ export async function POST(request: NextRequest) {
         url: createdJob.repo_url,
         isDeepScan: listeningRepository.branch_config === "ALL",
         extensions: userSettings ? userSettings.extensions : [],
-        repoKey: listeningRepository.repoKey
-          ? decrypt(listeningRepository.repoKey)
-          : null,
+        repoKey: decryptedRepoKey,
       }),
     });
     return NextResponse.json("OK", { status: 200 });
